@@ -1,30 +1,36 @@
 import pandas as pd
 
 
-def lectura_xlsx(file_path):
-    return pd.read_excel(file_path)
+def lectura_y_unificacion_de_ficheros(anios):
+    df = []
+    columnas = None
+
+    for anio in anios:
+        dataset = pd.read_excel(f"./Data/{anio}_Accidentalidad.xlsx")
+        if columnas is None:
+            columnas = set(dataset.columns)
+        else:
+            if set(dataset.columns) != columnas:
+                print(f"Las columnas del anio {anio} no coinciden")
+                continue
+
+        df.append(dataset)
+
+    if df:
+        df = pd.concat(df, ignore_index=True)
+        print("Archivos unificados correctamente")
+        return df
+    else:
+        print("No se han podido unificar los archivos")
+        return None
 
 
-def validacion_similitud(df_2019, df_2020, df_2021, df_2022, df_2023, df_2024):
-    return True if (list(df_2019.columns) == list(df_2020.columns) == list(df_2021.columns) == list(df_2022.columns) ==
-                    list(df_2023.columns) == list(df_2024.columns)) else False
+def limpieza_de_dataset(df):
+    return df.drop(['coordenada_x_utm', 'coordenada_y_utm'], axis=1, inplace=True)
 
 
 if __name__ == "__main__":
-    accidentalidad_2019 = './Data/2019_Accidentalidad.xlsx'
-    accidentalidad_2020 = './Data/2020_Accidentalidad.xlsx'
-    accidentalidad_2021 = './Data/2021_Accidentalidad.xlsx'
-    accidentalidad_2022 = './Data/2022_Accidentalidad.xlsx'
-    accidentalidad_2023 = './Data/2023_Accidentalidad.xlsx'
-    accidentalidad_2024 = './Data/2024_Accidentalidad.xlsx'
+    anios = [2019, 2020, 2021, 2022, 2023, 2024]
 
-    df_2019 = lectura_xlsx(accidentalidad_2019)
-    df_2020 = lectura_xlsx(accidentalidad_2020)
-    df_2021 = lectura_xlsx(accidentalidad_2021)
-    df_2022 = lectura_xlsx(accidentalidad_2022)
-    df_2023 = lectura_xlsx(accidentalidad_2023)
-    df_2024 = lectura_xlsx(accidentalidad_2024)
-
-    check = validacion_similitud(df_2019, df_2020, df_2021, df_2022, df_2023, df_2024)
-
-    print("Las columnas son iguales") if check else print("Las columnas son distintas")
+    df_unificado = lectura_y_unificacion_de_ficheros(anios)
+    df_limpiado = limpieza_de_dataset(df_unificado)
