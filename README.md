@@ -1,0 +1,1 @@
+Este ejercicio de Análisis Exploratorio de Datos (EDA) analiza datos de accidentes de tráfico en Madrid desde 2019-2024 usando variables clave como fecha, hora, localización, tipo de accidente, estado meteorológico y características de los implicados (edad, sexo, vehículo). El objetivo es explorar, limpiar y visualizar las tendencias.
